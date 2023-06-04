@@ -68,25 +68,25 @@ export class Aurora extends Construct {
       engine: cdk.aws_rds.DatabaseClusterEngine.auroraPostgres({
         version: cdk.aws_rds.AuroraPostgresEngineVersion.VER_15_2,
       }),
-      writer: cdk.aws_rds.ClusterInstance.provisioned("Instance1", {
-        instanceType: cdk.aws_ec2.InstanceType.of(
-          cdk.aws_ec2.InstanceClass.T3,
-          cdk.aws_ec2.InstanceSize.MEDIUM
-        ),
-        allowMajorVersionUpgrade: false,
-        autoMinorVersionUpgrade: true,
-        enablePerformanceInsights: true,
-        parameterGroup: dbParameterGroup,
-        performanceInsightRetention:
-          cdk.aws_rds.PerformanceInsightRetention.DEFAULT,
-        publiclyAccessible: false,
-        isFromLegacyInstanceProps: true,
-        instanceIdentifier: "db-instance1",
+      writer: cdk.aws_rds.ClusterInstance.serverlessV2("Instance2", {
+        autoMinorVersionUpgrade: false,
+        scaleWithWriter: true,
       }),
       readers: [
-        cdk.aws_rds.ClusterInstance.serverlessV2("Instance2", {
-          autoMinorVersionUpgrade: false,
-          scaleWithWriter: true,
+        cdk.aws_rds.ClusterInstance.provisioned("Instance1", {
+          instanceType: cdk.aws_ec2.InstanceType.of(
+            cdk.aws_ec2.InstanceClass.T3,
+            cdk.aws_ec2.InstanceSize.MEDIUM
+          ),
+          allowMajorVersionUpgrade: false,
+          autoMinorVersionUpgrade: true,
+          enablePerformanceInsights: true,
+          parameterGroup: dbParameterGroup,
+          performanceInsightRetention:
+            cdk.aws_rds.PerformanceInsightRetention.DEFAULT,
+          publiclyAccessible: false,
+          isFromLegacyInstanceProps: true,
+          instanceIdentifier: "db-instance1",
         }),
       ],
       serverlessV2MaxCapacity: 1.0,
